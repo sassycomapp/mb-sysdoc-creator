@@ -1,7 +1,7 @@
 ---
 title: "mb-sysdoc-creator"
 doc-id: "mb-7db5cba3"
-updated: "2026-10-04"
+updated: "2026-10-07"
 ---
 
 # mb-sysdoc-creator
@@ -228,15 +228,16 @@ path, sources consulted (GBrain queries run, URLs fetched, files read),
 cross-cutting findings, any developer corrections applied at Phase 5 or
 7, and the real outcome.
 
-### Phase 9a — Register at birth
+### Phase 9a — Registration at birth
 
-Any suite document this skill writes into a governed corpus is registered
-at creation — a register row appended to that corpus's register (and
-front matter where absent), per the register membership policy (align-docs
-function scope V2 item 6). This is the at-the-source hook: documents are
-registered when born, not archaeologically. If the destination corpus has
-no register, flag that as a finding for the developer instead of creating
-one (register creation is a developer decision).
+Registration for anything this skill produces is handled by the standing
+machinery, not by this skill: the component's skills-catalog row
+(`mybizz-os-docs/os-reference-docs/skills-catalog.md`) is confirmed current
+each run (a missing row is flagged as an open item — never created by this
+skill), and document frontmatter (`doc-id` / `updated`) is written by
+`mb-doc-check` at commit per the frontmatter ADR. There is no suite register
+to append to — the register institution was discontinued 2026-09-30; its
+absence is not a finding.
 
 ### Phase 10 — Learnings (close)
 
