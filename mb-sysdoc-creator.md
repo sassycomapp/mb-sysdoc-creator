@@ -1,306 +1,131 @@
 ---
 title: "mb-sysdoc-creator"
 doc-id: "mb-7db5cba3"
-updated: "2026-10-07"
+updated: "2026-10-14"
 ---
 
 # mb-sysdoc-creator
 
-Produces a real, verified `<name>-config.md` / `<name>-reference.md` /
-`<name>-explainer.md` suite for a system component — grounded in
-research, not a rewrite of whatever the developer happened to supply.
-Provided material is a starting point and a lead to verify, never a
-source to transcribe directly into a canonical doc.
+Researches a skill or system against its issuer's authoritative specification, and writes or refreshes its four documents: config, reference, explainer and learnings. It is the only system that researches issuers and writes these documents.
 
-**Governing specification:** `doc-suite-specification.md`, permanently
-located at `C:\mybizz\mybizz-config-docs\mb-sysdoc-creator\doc-suite-specification.md`.
-Every drafted document must satisfy that spec's per-document contents,
-never-contains list, and stray-line test before being presented. This
-skill does not improvise document structure independently of that spec.
+**Governing specification:** `C:\mybizz\mybizz-config-docs\mb-sysdoc-creator\doc-suite-specification.md`. Every document written satisfies it. Nothing is drafted from memory of it.
 
 ---
 
-## User-invocable
+## Invocation
 
-Invoked as `/mb-sysdoc-creator (system-name)`, alongside whatever the
-developer supplies in the same message: a description, uploaded files,
-URLs, or any combination. `system-name` becomes the file-name prefix
-(`<system-name>-config.md`, etc.) — confirm it matches the developer's
-intended naming convention (kebab-case, matching this environment's
-standing convention) before drafting; correct it with the developer
-rather than silently normalizing it.
+- `/mb-sysdoc-creator (system-name)`, by the developer or by mb-config-manager.
+- The developer may supply a description, files or links in the same message. These are leads to verify, never text to copy.
+- `system-name` is the folder name. A system MyBizz built starts with `mb-`. If the name matches no existing folder, or breaks the `mb-` rule, confirm the name with the developer before anything else.
 
 ---
 
-## Section 0 — Hard rules. Do not deviate.
+## Hard rules
 
-1. **Never write a fact from provided source material alone if it can be
-   live-verified instead.** A README, a URL, or a developer's
-   description is a lead, not ground truth — this environment has
-   repeatedly found source material stale or wrong in ways nobody
-   caught until checked live. Where this skill can verify directly
-   (GBrain search, reading a real file already in scope), it does.
-   Where it can't (a terminal command only the developer can run), it
-   hands over the exact command and waits for real output — never
-   proceeds on an assumed result.
-2. **Never guess the destination path.** If not given in the invocation,
-   STOP at Phase 2 and ask. Do not infer a folder from naming convention
-   alone, even a highly consistent one.
-3. **Never skip the cross-cutting system check**, even when the
-   developer's own description seems complete. Every run explicitly
-   checks whether Cupcake (rules or exemptions), Memory Governor
-   (governance treatment or bypass status), `security-global/`
-   principles, related skills, or adjacent GBrain sources have a real
-   bearing on this component — not only when one seems obviously
-   relevant. A component with none of these findings still gets the
-   check; "none found" is a real, reportable result, not a skipped step.
-4. **Every fact lives in exactly one of the three documents.** Governed
-   by `doc-suite-specification.md`'s single-source-of-truth rule — a
-   fact duplicated across two of the three drafted documents is a
-   drafting error, not acceptable reinforcement.
-5. **Confirmed facts and claimed-but-unverified facts from source
-   material are never blended silently.** Where research couldn't
-   verify something the developer or a source claimed, the drafted
-   document says so plainly (an "open items" entry, a flagged
-   uncertainty) rather than presenting it as settled.
-6. **Never mark a document set DONE without the developer's explicit
-   approval of the drafted content**, separate from and after their
-   approval of the research findings. Two distinct approval points, not
-   one combined.
-7. **If any action is blocked by Cupcake or any other policy
-   mechanism, STOP and report the exact block plainly — never silently
-   skip the blocked action, substitute a workaround, or proceed as if
-   it succeeded.** This applies at any phase: a destination write
-   blocked by `cup-no_cross_project_filesystem_access_by_default.rego`,
-   a read blocked by a secrets-protection rule, or any other policy
-   denial. Report the real error, state what's needed to proceed (e.g.
-   a cross-project grant via `mg-grant`, or a different destination),
-   and wait for the developer's explicit decision. Never invoke
-   `mg-grant` or any other permission-altering command on this skill's
-   own initiative — the developer decides whether to grant access, this
-   skill only reports that access is needed.
+1. **Verify live.** Never write a fact from supplied material alone when it can be verified. Where only the developer can run the check, give the exact command and wait for the real output.
+2. **The issuer's specification for the installed version is the standard.** Record every standard value with a link to its exact source. A value with no source is an open item.
+3. **Read the learnings first.** Read the system's learnings file in full before researching. Never propose a change that contradicts an entry without citing the entry and stating why.
+4. **Run the cross-system check every run.** Check Cupcake rules, memory governor treatment, `security-global` principles, and related skills and sources. Report "none found" for any with no result.
+5. **One fact, one home.** Follow the specification's tests for every line.
+6. **Never blend confirmed and unverified.** An unverified fact is written as an open item, never as settled.
+7. **Two approvals.** The developer approves the findings, then the drafts. Nothing is drafted before the first. Nothing is written before the second.
+8. **Never install anything.** Never install, upgrade or update any system. A newer issuer release is reported as a finding, and the developer decides.
+9. **On any block, stop.** When Cupcake or any policy blocks an action, report the exact block. Give the developer the exact grant line, in the form set in `mybizz-os-docs/operating-procedures/grant-paths.md`, with the narrowest folder or domain and the smallest count the work needs:
+   - `mg-grant --path <folder> --count N` to write in a folder;
+   - `net-grant --domain <domain> --count N` to reach a website.
+   Wait for the developer. Never grant access to itself. Never work around a block.
+10. **Write only inside the system's folder**, `C:\mybizz\mybizz-config-docs\{system}\`, and in its own learnings file. Never rename an existing document.
+11. **Keep no record of its own runs.** Findings are given in chat. Git keeps history.
+12. **Never commit.** The developer runs commit-all.
 
 ---
 
-## Section 1 — Phase sequence (one continuous run)
+## Mode
 
-### Phase 0 — Resume check and folder setup
+Decided at Phase 0, never asked:
 
-Confirm these folders exist; create any that don't before proceeding —
-never assume they're already there:
-```bash
-mkdir -p "/mnt/c/mybizz/logs/mb-sysdoc-creator/learnings"
-mkdir -p "/mnt/c/mybizz/logs/mb-sysdoc-creator/in-progress"
-mkdir -p "/mnt/c/mybizz/logs/mb-sysdoc-creator/last-completed-run"
-mkdir -p "/mnt/c/mybizz/logs/mb-sysdoc-creator/abandoned-runs"
-```
-
-Then check `C:\mybizz\logs\mb-sysdoc-creator\in-progress\` for an
-unfinished run against this exact system name. If found, offer to
-resume from where it left off, including research already gathered and
-decisions already made, instead of starting over. If declined, move
-that run to `C:\mybizz\logs\mb-sysdoc-creator\abandoned-runs\` (never
-deleted) and start fresh.
-
-### Phase 1 — Learnings (open)
-
-Load `C:\mybizz\logs\mb-sysdoc-creator\learnings\` for any prior,
-durable pattern about doc-suite drafting in general, or specifically
-about this component if it's been partially documented before. Apply
-anything already-settled rather than re-deriving it.
-
-### Phase 2 — Intake and destination check
-
-Confirm `doc-suite-specification.md` exists at its permanent location
-(`C:\mybizz\mybizz-config-docs\mb-sysdoc-creator\doc-suite-specification.md`).
-If it doesn't, STOP and report — do not draft from memory of the spec's
-contents or improvise a substitute structure.
-
-Read everything the developer supplied in full — not by filename or URL
-alone. Fetch every provided URL. Read every uploaded file's actual
-content.
-
-**If no destination path was given: STOP here and ask.** Do not proceed
-to research without a confirmed destination.
-
-### Phase 3 — Research (the substantial phase)
-
-1. **GBrain search, multiple queries, not one vague pass.** Search
-   across all registered sources for the component's real name and any
-   known aliases. A single query is not sufficient — vary terms the way
-   real investigation in this environment has (e.g. searching a
-   component's name, its function, and adjacent terminology separately
-   when the first pass comes back thin).
-2. **Cross-cutting system check, explicitly, every run:**
-   - Does any Cupcake rule govern, restrict, or exempt this component?
-   - Does Memory Governor treat this component specially (a governed
-     source vs. a permanent bypass exception, as with vendor-published
-     reference material)?
-   - Does any `security-global/` principle bear directly on this
-     component's defaults or risk profile?
-   - Are there related skills, adjacent GBrain sources, or other
-     system components with a real structural relationship to this one?
-   Report "none found" explicitly for any category with no result —
-   never silently omit a category.
-3. **Direct verification wherever possible.** For any fact checkable via
-   a real file read, a GBrain query, or a command this skill can run
-   directly: verify it, don't take the developer's or source material's
-   word for it. For anything only checkable via a terminal command this
-   skill cannot run itself, present the exact command and wait for the
-   developer's real output — mirroring `mb-compile-rules`' Prerequisite 3
-   and `mb-submit-memory`'s Detect step.
-4. **Track provenance per fact** — confirmed-live, confirmed-via-GBrain,
-   claimed-in-source-material-unverified, or developer-stated. This
-   tracking is what Phase 5's report and the drafted documents' honesty
-   depend on.
-
-### Phase 4 — Report
-
-Present the research findings before drafting anything:
-- What was found, organized by the eventual document it will inform.
-- Explicit confirmed vs. unverified status for each material fact.
-- The cross-cutting system check's results, including any "none found."
-- Any point where research was blocked and a developer-run command is
-  needed before drafting can proceed responsibly.
-
-Stop and wait for the developer's reply in the same run. Do not proceed
-to Phase 5 in this pass.
-
-### Phase 5 — Approve (research)
-
-The developer's reply is one of: approval to proceed to drafting as
-reported; a correction or addition (authoritative — incorporate exactly
-what they return); a request to research further before drafting; or a
-rejection (return to Phase 3 with the specific gap identified).
-
-Phase 6 never runs without explicit approval of the research findings,
-in this same run.
-
-### Phase 6 — Draft
-
-Write all three documents, each bound by `doc-suite-specification.md`:
-
-- **`<system-name>-config.md`** — state only. Identity, structure,
-  integration facts, open items. No rules, no rationale, no prose
-  narrative.
-- **`<system-name>-reference.md`** — execution only. Exact commands,
-  exact rules as imperatives, procedures as ordered steps, a closing
-  "Do not" list. No architecture framing, no justification beyond a
-  one-line pointer to the explainer.
-- **`<system-name>-explainer.md`** — orientation, suitability, and
-  reasoning, in that order: what the thing is in plain terms; a
-  conceptual feature summary; explicit best-for/good-for/not-good-for
-  suitability; then design reasoning, cross-cutting relationships, and
-  open architectural questions. No exact command syntax, no config facts
-  restated verbatim.
-
-**Self-check before presenting:** run each document against its own
-stray-line test from `doc-suite-specification.md`. Move any misplaced
-content to the document that actually owns it before Phase 7.
-
-### Phase 7 — Approve (draft)
-
-Present all three drafted documents together. The developer's reply is
-one of: approval to write them to the destination; corrections
-(authoritative — apply exactly as returned); or rejection of one or more
-documents (return to Phase 6 for the rejected document(s) specifically —
-approved documents from this same pass are not re-drafted).
-
-Phase 8 never runs without explicit approval of the drafted content,
-separate from Phase 5's research approval.
-
-### Phase 8 — Apply
-
-Write the approved documents to the confirmed destination path from
-Phase 2. If a document of the same name already exists there, confirm
-with the developer whether this is a full replacement or a merge before
-overwriting — never silently overwrite existing canonical docs. If the
-write itself is blocked by Cupcake or any other policy mechanism (e.g.
-the destination is outside the current project and no grant exists),
-apply Hard Rule 7 — stop, report the exact block, and wait for the
-developer's decision rather than skipping the write or attempting a
-workaround.
-
-### Phase 9 — Log
-
-Append to `C:\mybizz\logs\mb-sysdoc-creator\`: system name, destination
-path, sources consulted (GBrain queries run, URLs fetched, files read),
-cross-cutting findings, any developer corrections applied at Phase 5 or
-7, and the real outcome.
-
-### Phase 9a — Registration at birth
-
-Registration for anything this skill produces is handled by the standing
-machinery, not by this skill: the component's skills-catalog row
-(`mybizz-os-docs/os-reference-docs/skills-catalog.md`) is confirmed current
-each run (a missing row is flagged as an open item — never created by this
-skill), and document frontmatter (`doc-id` / `updated`) is written by
-`mb-doc-check` at commit per the frontmatter ADR. There is no suite register
-to append to — the register institution was discontinued 2026-09-30; its
-absence is not a finding.
-
-### Phase 10 — Learnings (close)
-
-Record anything durable for next run — a GBrain search pattern that
-worked well for this class of component, a cross-cutting check that
-turned out relevant in a non-obvious way, a source-material discrepancy
-worth remembering. Move this run's record from `in-progress\` to
-`last-completed-run\`.
+- **Create:** the folder does not exist, or holds none of the four documents. All four are written.
+- **Refresh:** the folder holds at least one of the four. Each existing document is refreshed row by row. Each missing document is created. An existing document is never rewritten whole.
 
 ---
 
-## Section 2 — Hard constraints
+## Phases
 
-- No drafting without Phase 5's research approval; no writing to disk
-  without Phase 7's separate draft approval.
-- No destination path is ever assumed — confirmed explicitly at Phase 2
-  or the run stops there.
-- Any Cupcake or policy block, at any phase, stops the run for an
-  explicit developer decision — never silently skipped, never worked
-  around, never treated as an implicit "not applicable."
-- The cross-cutting system check (Cupcake, Memory Governor,
-  security-global, related skills/sources) runs every time, with
-  explicit "none found" reporting — never conditionally skipped based on
-  the skill's own judgment that it's "probably not relevant here."
-- A fact's provenance (confirmed-live / confirmed-via-GBrain /
-  unverified-from-source / developer-stated) is tracked from Phase 3
-  onward and reflected honestly in the drafted documents — never
-  presented uniformly as settled fact.
-- A lost session never loses work — resume (Phase 0) picks up exactly
-  where it left off, including research already gathered.
+### Phase 0 — Locate
+
+1. Confirm the specification exists. If not, STOP and report.
+2. Read this skill's own learnings, `C:\mybizz\mybizz-config-docs\mb-sysdoc-creator\sysdoc-creator-learnings.md`, and apply them.
+3. Find the folder `C:\mybizz\mybizz-config-docs\{system}\`. List which of the four documents exist, found by their endings: `-config.md`, `-reference.md`, `-explainer.md`, `-learnings.md`.
+4. Set the mode.
+5. **Refresh:** read every existing document in full, the learnings first.
+
+### Phase 1 — Intake
+
+Read everything the developer supplied in full. Open every link supplied. Request `net-grant` where a site is blocked.
+
+### Phase 2 — Research
+
+1. **Issuer and version.**
+   - Name the issuer. For a system MyBizz built, the issuer is MyBizz, and the standard is its source files. Its repository is listed in `mybizz-os-docs/os-reference-docs/repo-organization.md`.
+   - Read the installed version live, or give the developer the exact command.
+2. **Authoritative sources.**
+   - Find the issuer's official documentation, source repository, release notes and configuration schema for the installed version.
+   - Note the newest issuer release. If it is newer than the installed version, record it as a finding: new version, what its release notes say changes or breaks, and which learnings entries it affects.
+3. **Settings.** For every setting:
+   - the issuer standard, with its exact source link;
+   - the MyBizz value, verified live;
+   - whether they differ. A difference is either justified by a learnings entry (name its ID), or reported as unjustified, with a proposed learnings entry or a proposed correction.
+4. **Checks.** For every setting, the installed version, and whether the system works: the exact method to check it live, and whether the agent or the developer runs it.
+5. **Cross-system check.** Hard rule 4.
+6. **GBrain.** Search several times, varying terms: the system's name, its function, and related terms.
+7. **Provenance.** Track every fact as confirmed live, confirmed through GBrain, unverified from a source, or stated by the developer.
+8. **Refresh:** compare every row and section of the existing documents with the research. List each difference.
+
+### Phase 3 — Report, first approval
+
+Present, before drafting:
+
+- **Create:** the findings, sorted by the document they belong in.
+- **Refresh:** a numbered change list. Each item gives the document, the row or section, the current text, the proposed text, and the source.
+- Unverified facts, flagged.
+- The cross-system check results, including every "none found".
+- Any newer issuer release (Phase 2, step 2).
+- Proposed learnings entries.
+- Any command the developer must run before drafting can continue.
+
+Stop and wait. The developer approves, corrects (apply exactly as given), asks for more research, or rejects (return to Phase 2 with the gap named).
+
+### Phase 4 — Draft
+
+- **Create:** draft all four documents. The learnings document holds the approved entries, or only its empty table.
+- **Refresh:** draft only the approved changes, plus any missing document.
+- Run every line through its document's placement test in the specification. Move any misplaced line to the document that owns it.
+
+### Phase 5 — Present, second approval
+
+Present the drafts or changes. The developer approves, corrects (apply exactly as given), or rejects a document (return to Phase 4 for that document only).
+
+### Phase 6 — Apply
+
+- Write inside the system's folder only. Request `mg-grant` for the folder if blocked.
+- **Create:** write the four documents, each named `{folder}{ending}`.
+- **Refresh:** change only the approved rows and sections in place. Create any missing document, named `{folder}{ending}`.
+
+### Phase 7 — Close
+
+1. If the run taught something about doing this job well, propose an entry for this skill's own learnings. Write it only if approved.
+2. Report what was written, document by document.
+3. Give the revoke line for any grant still open: `mg-revoke --path <folder>` or `net-revoke --domain <domain>`.
+4. Remind the developer to commit with commit-all.
 
 ---
 
-## Section 3 — Completion status protocol
+## Completion status
 
-- **DONE** — all three documents drafted, approved at both Phase 5 and
-  Phase 7, and written to the confirmed destination.
-- **BLOCKED** — no destination path was given and the developer hasn't
-  yet supplied one, or research could not establish enough confirmed
-  fact to draft responsibly and is waiting on a developer-run command's
-  real output.
-- **PERMISSION_REQUIRED** — an action was denied by Cupcake or another
-  policy mechanism (Hard Rule 7). State the exact block encountered and
-  what the developer needs to decide (grant access, choose a different
-  destination, or otherwise) — never silently skipped or worked around.
-- **REPORT_REJECTED** — the developer rejected the Phase 4 research
-  findings; state what needs further research before Phase 4 is redone.
-- **DRAFT_REJECTED** — the developer rejected one or more drafted
-  documents at Phase 7; state which document(s) and why; redraft only
-  those at Phase 6.
+- **DONE:** both approvals given in this run, and every approved change written.
+- **BLOCKED:** waiting on a developer-run command's output, or on a confirmed system name.
+- **PERMISSION_REQUIRED:** a policy blocked an action. State the block and the grant line needed.
+- **REPORT_REJECTED:** the developer rejected the findings. State the gap to research.
+- **DRAFT_REJECTED:** the developer rejected one or more documents. State which and why. Redraft only those.
 
-Never mark a run DONE without both the Phase 5 and Phase 7 approvals on
-record from within this same run, and never present a drafted document
-that hasn't passed its own stray-line self-check.
-
----
-
-## Folders
-
-| Folder | Holds |
-|---|---|
-| `C:\mybizz\logs\mb-sysdoc-creator\` | Permanent history, one record per run |
-| `C:\mybizz\logs\mb-sysdoc-creator\learnings\` | Durable patterns from past runs |
-| `C:\mybizz\logs\mb-sysdoc-creator\in-progress\` | Current run only — resume source if interrupted |
-| `C:\mybizz\logs\mb-sysdoc-creator\last-completed-run\` | Full detail of most recent finished run |
-| `C:\mybizz\logs\mb-sysdoc-creator\abandoned-runs\` | Declined-resume runs, kept, never deleted |
+Never mark DONE without both approvals from this run, or with a document that has not passed its placement test.
