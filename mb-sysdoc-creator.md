@@ -45,7 +45,7 @@ Researches a skill or system against its issuer's authoritative specification, a
 Decided at Phase 0, never asked:
 
 - **Create:** the folder does not exist, or holds none of the four documents. All four are written.
-- **Refresh:** the folder holds at least one of the four. Each existing document is refreshed row by row. Each missing document is created. An existing document is never rewritten whole.
+- **Refresh:** the folder holds at least one of the four. Each existing document is refreshed row by row. Each missing document is created. An existing document is rewritten whole only when it must be restructured to the specification, every fact in it has been marked carried, corrected or retired, and the developer has approved the full draft.
 
 ---
 
@@ -109,7 +109,7 @@ Present the drafts or changes. The developer approves, corrects (apply exactly a
 
 - Write inside the system's folder only. Request `mg-grant` for the folder if blocked.
 - **Create:** write the four documents, each named `{folder}{ending}`.
-- **Refresh:** change only the approved rows and sections in place. Create any missing document, named `{folder}{ending}`.
+- **Refresh:** change only the approved rows and sections in place, or write a whole document where its restructure was approved. Create any missing document, named `{folder}{ending}`.
 
 ### Phase 7 — Close
 
