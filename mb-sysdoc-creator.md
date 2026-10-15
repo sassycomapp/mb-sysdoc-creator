@@ -1,7 +1,7 @@
 ---
 title: "mb-sysdoc-creator"
 doc-id: "mb-7db5cba3"
-updated: "2026-10-14"
+updated: "2026-10-15"
 ---
 
 # mb-sysdoc-creator
@@ -109,7 +109,7 @@ Present the drafts or changes. The developer approves, corrects (apply exactly a
 
 - Write inside the system's folder only. Request `mg-grant` for the folder if blocked.
 - **Create:** write the four documents, each named `{folder}{ending}`.
-- **Refresh:** change only the approved rows and sections in place, or write a whole document where its restructure was approved. Create any missing document, named `{folder}{ending}`.
+- **Refresh:** change only the approved rows and sections in place, or write a whole document where its restructure was approved. Create any missing document, named with the same start as the documents already in the folder.
 
 ### Phase 7 — Close
 
