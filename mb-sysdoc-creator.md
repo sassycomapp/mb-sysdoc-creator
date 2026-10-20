@@ -1,7 +1,7 @@
 ---
 title: "mb-sysdoc-creator"
 doc-id: "mb-7db5cba3"
-updated: "2026-10-15"
+updated: "2026-10-20"
 ---
 
 # mb-sysdoc-creator
@@ -80,6 +80,7 @@ Read everything the developer supplied in full. Open every link supplied. Reques
 6. **GBrain.** Search several times, varying terms: the system's name, its function, and related terms.
 7. **Provenance.** Track every fact as confirmed live, confirmed through GBrain, unverified from a source, or stated by the developer.
 8. **Refresh:** compare every row and section of the existing documents with the research. List each difference.
+9. **Other files.** For every file in the folder that is not one of the four and not a working file listed in the config, place each fact that is still true in the document that owns it, and drop each fact that is no longer true. At Phase 7, name each emptied file. The developer moves it to obsolete.
 
 ### Phase 3 — Report, first approval
 
